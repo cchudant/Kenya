@@ -1,0 +1,8 @@
+[package]
+name = "kenya"
+version = "0.1.0"
+authors = ["SkyBeastMC <skybeastmc@gmail.com>"]
+
+[dependencies]
+yew = { git = "https://github.com/DenisKolodin/yew", features = ["toml", "yaml", "msgpack", "cbor"] }
+stdweb = "0.4.9"
