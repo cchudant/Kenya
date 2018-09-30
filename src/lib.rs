@@ -2,19 +2,24 @@ extern crate stdweb;
 #[macro_use]
 extern crate yew;
 
-use stdweb::web::Date;
 use yew::prelude::*;
 use yew::services::ConsoleService;
 
+#[derive(Clone)]
+pub enum Cell {
+    Empty,
+    Player1,
+    Player2
+}
+
 pub struct Model {
     console: ConsoleService,
-    value: i64,
+    value: Vec<Vec<Cell>>,
 }
 
 pub enum Msg {
-    Increment,
-    Decrement,
-    Bulk(Vec<Msg>),
+    Play(usize),
+    Clear,
 }
 
 impl Component for Model {
@@ -24,24 +29,20 @@ impl Component for Model {
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
         Model {
             console: ConsoleService::new(),
-            value: 0,
+            value: vec![vec![Cell::Empty; 6]; 7],
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Increment => {
-                self.value = self.value + 1;
-                self.console.log("plus one");
-            }
-            Msg::Decrement => {
-                self.value = self.value - 1;
-                self.console.log("minus one");
-            }
-            Msg::Bulk(list) => for msg in list {
-                self.update(msg);
-                self.console.log("Bulk action");
+            Msg::Play(x) => {
+                self.value[5][x] = Cell::Player1;
+                self.console.log("Play");
             },
+            Msg::Clear => {
+                self.value.clear();
+                self.console.log("Clear");
+            }
         }
         true
     }
@@ -51,14 +52,33 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div>
-                <nav class="menu",>
-                    <button onclick=|_| Msg::Increment,>{ "Increment" }</button>
-                    <button onclick=|_| Msg::Decrement,>{ "Decrement" }</button>
-                    <button onclick=|_| Msg::Bulk(vec![Msg::Increment, Msg::Increment]),>{ "Increment Twice" }</button>
-                </nav>
-                <p>{ self.value }</p>
-                <p>{ Date::new().to_string() }</p>
+                <table>
+                    { for self.value.iter().enumerate().map(|(y, row)| view_row(row, y)) }
+                </table>
             </div>
         }
+    }
+}
+
+fn view_row(row: &Vec<Cell>, y: usize) -> Html<Model> {
+    html! {
+        <tr>
+            { for row.iter().enumerate().map(|(x, cell)| view_cell(cell, x, y)) }
+        </tr>
+    }
+}
+
+fn view_cell(cell: &Cell, x: usize, y: usize) -> Html<Model> {
+    let cell_status = match cell {
+        Cell::Empty => "cell-empty",
+        Cell::Player1 => "cell-player1",
+        Cell::Player2 => "cell-player2"
+    };
+    html! {
+        <td>
+            <div class=("cell", cell_status), onclick=|_| Msg::Play(x),>
+                {x} {y}
+            </div>
+        </td>
     }
 }
