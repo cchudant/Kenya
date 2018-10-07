@@ -1,13 +1,46 @@
+body {
+    margin: 0;
+}
+
+.main {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.centered {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    height: auto;
+    width: 850px;
+    height: 572.81px;
+}
+
+.columns {
+    position: absolute;
+    padding: 0 100px;
+    width: 850px;
+    height: 572.81px;
+    border-spacing: 0;
+}
+
+.board {
+    position: absolute;
+    width: 850px;
+    height: 572.81px;
+}
+
 .cell {
-    height: 50px;
-    width: 50px;
+    position: absolute;
+    width: 81px;
+}
+.cell > img {
+    z-index: -1;
 }
 
-.cell-empty {
-}
-
-.cell-player1 {
-}
-
-.cell-player2 {
+img {
+    position: relative;
 }
